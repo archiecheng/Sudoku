@@ -86,4 +86,11 @@ class SudokuPuzzleRepository {
     final random = Random(seed);
     return candidates[random.nextInt(candidates.length)];
   }
+  SudokuPuzzle getPuzzleById(String id) {
+    if (_allPuzzles.isEmpty) loadPuzzles();
+    return _allPuzzles.firstWhere(
+      (p) => p.id == id,
+      orElse: () => throw StateError("Puzzle not found: $id"),
+    );
+  }
 }

@@ -130,18 +130,13 @@ class SudokuBoard {
     if (json['puzzleId'] != puzzle.id) {
        throw ArgumentError("Puzzle ID mismatch: json[${json['puzzleId']}] != puzzle[${puzzle.id}]");
     }
-    
-    // Validate difficulty matches?
-    // if (json['difficulty'] != puzzle.difficulty.name) ...
 
     List<int> values = List<int>.from(json['values']);
     List<List<int>> notesRaw = (json['notes'] as List).map((e) => List<int>.from(e)).toList();
 
     if (values.length != 81) throw ArgumentError("Snapshot values length must be 81");
-    if (notesRaw.length != 81) throw ArgumentError("Snapshot notes length must be 81");
 
     List<SudokuCell> restoredCells = List.generate(81, (i) {
-      // Re-determine isFixed from puzzle. It's safer than relying on snapshot if we trust the puzzle definition.
       bool isFixed = puzzle.puzzleValues[i] != 0;
       return SudokuCell(
         value: values[i],
@@ -151,5 +146,12 @@ class SudokuBoard {
     });
 
     return SudokuBoard(puzzle: puzzle, cells: restoredCells);
+  }
+
+  SudokuBoard clone() {
+    return SudokuBoard(
+      puzzle: puzzle,
+      cells: cells.map((e) => e.clone()).toList(),
+    );
   }
 }
